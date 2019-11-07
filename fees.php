@@ -217,7 +217,17 @@ if (!isset($_SESSION['loggedin'])) {
 													<?php echo $row['fiscal_year']; ?>
 												</th>
 																								<th>
-													<?php echo $row['remarks']; ?>
+													<?php 
+														if ($row['voucher_type'] = 'Payment Entry'){
+															
+															$payment_entry = $row['voucher_no '];
+															$sql_payment_entry = "SELECT * FROM `tabpayment entry` WHERE name = '$payment_entry'";
+															$result_payment_entry = mysqli_query($db, $sql_payment_entry);
+															$row_payment_entry = mysqli_fetch_array($result_payment_entry);
+															echo $row_payment_entry['refence_no'];
+														}else{
+															echo $row['remarks'];
+														}?>
 												</th>
 												<th>
 													<?php echo number_format( $row['debit'], 2) ; 
