@@ -173,8 +173,9 @@ session_start();
 								  
 								  
 							<?php
-								// $servername = "localhost";	$username = "cjmjbsbvun"; $password = "Kew92hAwUw";	$dbname = "cjmjbsbvun";
-              							$servername = "localhost";  $username = "root"; $password = ""; $dbname = "portal";
+	$servername = 'localhost';	$username = 'riuac_suportal';	$password = 'D8QEo4MZIiTNF1Ot69WMCoJhnedVVQ5B';	$dbname = 'riuac_sportals';							
+	// $servername = "localhost";	$username = "cjmjbsbvun"; $password = "Kew92hAwUw";	$dbname = "cjmjbsbvun";
+              							//$servername = "localhost";  $username = "root"; $password = ""; $dbname = "portal";
 								//$db = mysqli_connect('localhost', 'cjmjbsbvun', 'Kew92hAwUw', 'cjmjbsbvun');
 								
 								// Create connection
