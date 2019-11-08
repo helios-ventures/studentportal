@@ -2,11 +2,10 @@
 // We need to use sessions, so you should always start sessions using the below code.
 session_start();
 // If the user is not logged in redirect to the login page...
-if (!isset($_SESSION['loggedin'])) {
-  header('Location: index.php');
-  exit();
-}
-
+// if (!isset($_SESSION['loggedin'])) {
+//   header('Location: index.php');
+//   exit();
+//}
 ?>
 
 <!DOCTYPE html>
@@ -162,29 +161,28 @@ if (!isset($_SESSION['loggedin'])) {
 					<table class="table table-bordered" id="userTable" width="100%" cellspacing="0">
 								  <thead>
 									<tr>
+                    <th>Date</th>
 										<th>Voucher #</th>
 										<th>Voucher Type </th>
-										<th>Created</th>
 										<th>Academic Year</th>
-										<th>Desc</th>
+										<th>Description</th>
 										<th>Debit</th>										
 										<th>Credit</th>
-										<th>Balance</th>
 									</tr>
 								  </thead>
 								  
 								  
 							<?php
-								$servername = "localhost";	$username = "cjmjbsbvun"; $password = "Kew92hAwUw";	$dbname = "cjmjbsbvun";
+								// $servername = "localhost";	$username = "cjmjbsbvun"; $password = "Kew92hAwUw";	$dbname = "cjmjbsbvun";
+              							$servername = "localhost";  $username = "root"; $password = ""; $dbname = "portal";
 								//$db = mysqli_connect('localhost', 'cjmjbsbvun', 'Kew92hAwUw', 'cjmjbsbvun');
 								
-
 								// Create connection
 								$conn = new mysqli($servername, $username, $password, $dbname);
 								
 								//$tabfee = "tabfees one";
 								
-								$sql = "SELECT * FROM `tabGL Entry`  WHERE party = '".$_SESSION['name']."'"; 
+								$sql = "SELECT * FROM `tabGL Entry`  WHERE party = 'RIU/BED/01/18/008'"; 
 								if (mysqli_query($conn, $sql)) {
 								echo "";
 								} else {
@@ -199,33 +197,42 @@ if (!isset($_SESSION['loggedin'])) {
 								while($row = mysqli_fetch_assoc($result)) 
 								
 								{ 
-
 								
 								?>
 									<tbody>
 										   <tr>
+                        <th>
+                          <?php echo $row['posting_date']; ?>
+                        </th>
 												<th>
 													<?php echo $row['voucher_no']; ?>
 												</th>
 												<th>
 													<?php echo $row['voucher_type']; ?>
 												</th>
-												<th>
-													<?php echo $row['posting_date']; ?>
-												</th>
+												
 												<th>
 													<?php echo $row['fiscal_year']; ?>
 												</th>
-																								<th>
+												<th>
 													<?php 
-														if ($row['voucher_type'] = 'Payment Entry'){
+														if ($row['voucher_type'] == 'Payment Entry'){
 															
-															$payment_entry = $row['voucher_no '];
-															$sql_payment_entry = "SELECT * FROM `tabpayment entry` WHERE name = '$payment_entry'";
-															$result_payment_entry = mysqli_query($db, $sql_payment_entry);
+															$payment_entry = $row['voucher_no'];
+															$sql_payment_entry = "SELECT * FROM `tabpayment entry` WHERE name = '".$payment_entry."'";
+															$result_payment_entry = mysqli_query($conn, $sql_payment_entry);
 															$row_payment_entry = mysqli_fetch_array($result_payment_entry);
-															echo $row_payment_entry['refence_no'];
-														}else{
+															echo $row_payment_entry['mode_of_payment'].": ".$row_payment_entry['reference_no']. ", Paid Against ".$row['against_voucher'];
+														}
+                            elseif($row['voucher_type'] == 'Fees'){
+                              $fees = $row['voucher_no'];
+                              $sql_fees = "SELECT * FROM `tabfees` WHERE name = '".$fees."'";
+                              $result_fees = mysqli_query($conn, $sql_fees);
+                              $row_fees = mysqli_fetch_array($result_fees);
+                              echo "Fees for ". $row_fees['program'];
+                            }
+
+                            else{
 															echo $row['remarks'];
 														}?>
 												</th>
@@ -237,12 +244,7 @@ if (!isset($_SESSION['loggedin'])) {
 													<?php echo number_format( $row['credit'], 2) ;
 													$credit  += $row['credit'];
 													?>
-												</th>
-												<th>
-									<?php ?>									
-									</th>
-													  
-															  
+												</th>  
 											</tr>
 									
 							<?php
@@ -253,37 +255,17 @@ if (!isset($_SESSION['loggedin'])) {
 									?>
 									
 									<tr>
-									<th></th>
-									<th>
-									<?php ?>									
-									</th>
-									<th>
-									<?php ?>									
-									</th>
-									<th>
-									<?php ?>									
-									</th>
-									<th>
-									<?php ?>									
-									</th>
-									<th>
-									<?php ?>									
-									</th>
-									<th>
-									<?php ?>									
-									</th>
-									
-									<th>
-									<?php $balance = $debit - $credit; 
-										   echo number_format ( $balance, 2);
-										   
-										  mysqli_free_result($result); 
-										   
-										   ?>
-									
-									</th>
+									   <th> <?php echo "Total";?> </th>
+									   <th><?php ?></th>
+									   <th><?php ?>	</th>
+									   <th><?php ?>	</th>
+									   <th><?php $balance = $debit - $credit; 
+                                echo "Balance: ".number_format( $balance, 2);
+                       
+                                  mysqli_free_result($result); ?>	</th>
+									   <th>	<?php  echo number_format($debit); ?>			</th>
+									   <th><?php echo number_format($credit);?>		</th>
 									</tr>
-									
 									</tbody>
 									<?php
 										} else {
